@@ -27,7 +27,6 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* ── App bar ── */
 .appbar {
   background: var(--white);
   border-bottom: 1px solid var(--border);
@@ -41,7 +40,15 @@ body {
 
 .main { padding: 16px; }
 
-/* ── Card ── */
+.step-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--gray);
+  margin-bottom: 8px;
+  padding-left: 2px;
+}
+
 .card {
   background: var(--white);
   border-radius: 16px;
@@ -70,6 +77,76 @@ body {
 .card-title { font-size: 15px; font-weight: 700; }
 .card-sub   { font-size: 12px; color: var(--gray); margin-top: 1px; }
 
+/* ── Form ── */
+.field { margin-bottom: 14px; }
+.field:last-child { margin-bottom: 0; }
+.field label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--gray);
+  margin-bottom: 6px;
+}
+.field input[type="text"],
+.field input[type="date"] {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  font-size: 16px;
+  font-family: inherit;
+  color: var(--black);
+  background: var(--white);
+  outline: none;
+  -webkit-appearance: none;
+}
+.field input:focus { border-color: var(--black); }
+.field-hint { font-size: 11px; color: var(--gray); margin-top: 5px; line-height: 1.6; }
+
+.path-preview {
+  background: var(--light);
+  border-radius: 10px;
+  padding: 11px 14px;
+  font-size: 12px;
+  line-height: 1.9;
+  margin-top: 12px;
+  word-break: break-all;
+}
+.path-preview .pp-label {
+  font-size: 10px; color: var(--gray);
+  font-weight: 700; letter-spacing: 0.05em;
+  display: block; margin-bottom: 3px;
+}
+.path-preview .pp-seg { color: var(--gray); }
+.path-preview .pp-cur { color: var(--black); font-weight: 700; }
+
+/* ── Toggle ── */
+.toggle-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 0;
+  border-top: 1px solid var(--border);
+}
+.toggle-row:first-of-type { border-top: none; }
+.toggle-label { font-size: 13px; font-weight: 600; }
+.toggle-sub { font-size: 11px; color: var(--gray); margin-top: 1px; }
+.switch { position: relative; width: 46px; height: 27px; flex-shrink: 0; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider {
+  position: absolute; cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: #d1d1d6; border-radius: 27px;
+  transition: 0.25s;
+}
+.slider:before {
+  position: absolute; content: "";
+  height: 23px; width: 23px; left: 2px; bottom: 2px;
+  background: white; border-radius: 50%;
+  transition: 0.25s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+.switch input:checked + .slider { background: var(--black); }
+.switch input:checked + .slider:before { transform: translateX(19px); }
+
 /* ── Upload zone ── */
 .upload-zone {
   border: 2px dashed var(--border);
@@ -80,7 +157,6 @@ body {
   background: var(--light);
   -webkit-tap-highlight-color: transparent;
   user-select: none;
-  transition: background 0.15s, border-color 0.15s;
 }
 .upload-zone:active { background: #ebebee; border-color: var(--black); }
 .uz-icon { font-size: 28px; display: block; margin-bottom: 6px; }
@@ -97,7 +173,6 @@ body {
   border-radius: 20px; padding: 2px 9px;
   font-size: 11px; font-weight: 700;
 }
-
 .photo-grid-ui {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -110,10 +185,7 @@ body {
   overflow: hidden;
   background: var(--light);
 }
-.photo-thumb img {
-  width: 100%; height: 100%;
-  object-fit: cover; display: block;
-}
+.photo-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .pt-num {
   position: absolute; bottom: 2px; left: 2px;
   background: rgba(0,0,0,0.55); color: white;
@@ -127,8 +199,7 @@ body {
   border: none; border-radius: 50%;
   font-size: 12px; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  padding: 0;
-  -webkit-tap-highlight-color: transparent;
+  padding: 0; -webkit-tap-highlight-color: transparent;
 }
 .pt-del {
   position: absolute; top: 2px; right: 2px;
@@ -137,13 +208,9 @@ body {
   border: none; border-radius: 50%;
   font-size: 12px; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  padding: 0;
-  -webkit-tap-highlight-color: transparent;
+  padding: 0; -webkit-tap-highlight-color: transparent;
 }
-.photo-hint {
-  text-align: center; font-size: 11px;
-  color: var(--gray); margin-top: 6px;
-}
+.photo-hint { text-align: center; font-size: 11px; color: var(--gray); margin-top: 6px; }
 
 /* ── Buttons ── */
 .btn {
@@ -152,12 +219,12 @@ body {
   border-radius: 100px; border: none;
   font-size: 15px; font-weight: 700; font-family: inherit;
   cursor: pointer; text-align: center;
-  margin-top: 14px;
+  margin-top: 12px;
   -webkit-tap-highlight-color: transparent;
   transition: opacity 0.15s, transform 0.1s;
 }
 .btn:active { opacity: 0.65; transform: scale(0.98); }
-.btn:disabled { opacity: 0.4; cursor: default; }
+.btn:disabled { opacity: 0.4; cursor: default; transform: none; }
 .btn-black  { background: var(--black); color: white; font-size: 16px; padding: 17px; }
 .btn-outline {
   background: transparent; color: var(--black);
@@ -165,7 +232,6 @@ body {
   font-size: 13px;
 }
 
-/* ── Info box ── */
 .info-box {
   background: var(--light);
   border-radius: 10px;
@@ -177,12 +243,25 @@ body {
 }
 .info-box strong { color: var(--black); }
 
+/* ── Progress ── */
+.progress-wrap { margin-top: 14px; display: none; }
+.progress-bar-bg {
+  height: 6px; background: var(--border);
+  border-radius: 6px; overflow: hidden;
+}
+.progress-bar-fill {
+  height: 100%; width: 0%;
+  background: var(--black);
+  border-radius: 6px;
+  transition: width 0.3s;
+}
 .status-msg {
   text-align: center; font-size: 12px;
-  color: var(--gray); margin-top: 8px;
-  min-height: 16px;
-  line-height: 1.6;
+  color: var(--gray); margin-top: 10px;
+  min-height: 16px; line-height: 1.7;
+  word-break: break-all;
 }
+.status-msg a { color: var(--black); font-weight: 600; }
 
 </style>
 </head>
@@ -190,22 +269,54 @@ body {
 
 <div class="appbar">
   <div class="appbar-title">📦 梱包写真PDF作成ツール</div>
-  <div class="appbar-sub">写真を選んでワンクリックでPDF化</div>
+  <div class="appbar-sub">PDF作成 ＋ 元画像をGoogleドライブへ自動保存</div>
 </div>
 
 <div class="main">
 
+  <!-- ─── STEP 1: 案件情報 ─── -->
+  <div class="step-label">STEP 1　案件情報</div>
+  <div class="card">
+    <div class="card-head">
+      <div class="card-icon">📁</div>
+      <div>
+        <div class="card-title">保存先フォルダの設定</div>
+        <div class="card-sub">出荷日から YYYYMM を自動判定</div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>出荷日 *</label>
+      <input type="date" id="shipDate" onchange="updatePathPreview()">
+      <div class="field-hint">この日付の年月（例：2026年8月 → 202608）フォルダに格納されます</div>
+    </div>
+
+    <div class="field">
+      <label>案件名（フォルダ名）*</label>
+      <input type="text" id="projectName" placeholder="例：鬼塚工務店（〇〇様邸）第〇便"
+             autocomplete="off" oninput="updatePathPreview()">
+    </div>
+
+    <div class="path-preview">
+      <span class="pp-label">保存先パス</span>
+      <span class="pp-seg">G2_出荷写真</span> ›
+      <span class="pp-cur" id="ppMonth">202608</span> ›
+      <span class="pp-cur" id="ppProject">（案件名を入力）</span>
+    </div>
+  </div>
+
+  <!-- ─── STEP 2: 写真 ─── -->
+  <div class="step-label">STEP 2　梱包写真</div>
   <div class="card">
     <div class="card-head">
       <div class="card-icon">📷</div>
       <div>
-        <div class="card-title">梱包写真</div>
+        <div class="card-title">梱包写真の選択</div>
         <div class="card-sub">4×4グリッド（最大16枚/ページ）</div>
       </div>
     </div>
 
-    <div class="upload-zone"
-         onclick="document.getElementById('photoInput').click()">
+    <div class="upload-zone" onclick="document.getElementById('photoInput').click()">
       <span class="uz-icon">📷</span>
       <div class="uz-main">タップして写真を追加</div>
       <div class="uz-hint">複数選択OK・後から追加も可</div>
@@ -222,118 +333,119 @@ body {
       <div class="photo-hint">↻ で回転 ／ ✕ で削除</div>
     </div>
 
-    <button class="btn btn-black" id="mainBtn" onclick="generatePdfDirect()">
-      PDFを作成してダウンロード
-    </button>
     <button class="btn btn-outline" onclick="clearPhotos()">写真をすべてクリア</button>
+  </div>
 
-    <div class="info-box">
-      ボタンを押すとその場で <strong>梱包写真.pdf</strong> がダウンロードされます（印刷画面は表示されません）。<br>
-      うまく生成できない場合は下の予備の方法をお試しください。
+  <!-- ─── STEP 3: 実行 ─── -->
+  <div class="step-label">STEP 3　実行</div>
+  <div class="card">
+
+    <div class="toggle-row">
+      <div>
+        <div class="toggle-label">PDFをダウンロード</div>
+        <div class="toggle-sub">端末に梱包写真PDFを保存</div>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="optPdf" checked>
+        <span class="slider"></span>
+      </label>
     </div>
 
-    <button class="btn btn-outline" style="margin-top:10px;" onclick="doPrintFallback()">
-      🖨️ 印刷してPDFに保存（予備の方法）
+    <div class="toggle-row">
+      <div>
+        <div class="toggle-label">元画像をドライブに保存</div>
+        <div class="toggle-sub">撮影したままの画像をアップロード</div>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="optDriveImg" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <div class="toggle-row">
+      <div>
+        <div class="toggle-label">PDFもドライブに保存</div>
+        <div class="toggle-sub">同じフォルダにPDFを格納</div>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="optDrivePdf" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <button class="btn btn-black" id="mainBtn" onclick="runAll()">
+      実行する
     </button>
 
+    <div class="progress-wrap" id="progressWrap">
+      <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill"></div></div>
+    </div>
     <div class="status-msg" id="statusMain"></div>
+
+    <div class="info-box">
+      ドライブ保存にはGAS Web Appの設定が必要です。<br>
+      未設定の場合はPDFダウンロードのみ動作します。
+    </div>
   </div>
 
 </div><!-- /main -->
-
-<!-- ══ PRINT AREA（予備方式でのみ使用・画面では非表示）══ -->
-<div id="printArea" style="display:none;"></div>
-
-<style>
-@media print {
-  body > .appbar, body > .main { display: none !important; }
-  #printArea { display: block !important; }
-
-  * { box-sizing: border-box; }
-
-  @page { size: A4 portrait; margin: 0; }
-
-  .prt-photo-page {
-    width: 210mm;
-    min-height: 297mm;
-    page-break-after: always;
-  }
-  .prt-photo-page:last-child { page-break-after: avoid; }
-
-  .prt-hdr {
-    background: #1d1d1f !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-    color: white !important;
-    width: 100%;
-    padding: 5mm 15mm;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .prt-hdr-title { font-size: 13pt; font-weight: 700; letter-spacing: 0.06em; }
-  .prt-hdr-sub   { font-size: 8pt; opacity: 0.75; }
-
-  .prt-photo-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(4, 1fr);
-    gap: 2.5mm;
-    height: 267mm;
-    margin: 3mm 15mm 9mm;
-  }
-  .prt-photo-cell {
-    border: 0.3mm solid #d0d0d5;
-    border-radius: 1mm;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    position: relative;
-    background: #f9f9f9 !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-    padding: 1mm 1mm 5mm 1mm;
-  }
-  .prt-photo-cell img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-    display: block;
-  }
-  .prt-photo-num {
-    position: absolute;
-    bottom: 0.8mm;
-    left: 0; right: 0;
-    text-align: center;
-    font-size: 6pt;
-    color: #aaa;
-    font-weight: 600;
-  }
-}
-</style>
 
 
 <script>
 'use strict';
 
+/* ═══════════════════════════════════
+   ★ 設定：GAS Web App の URL をここに貼り付け
+   （デプロイ後に取得できる /exec で終わるURL）
+═══════════════════════════════════ */
+var GAS_URL = '';
+
+
 /* ── State ───────────────────────── */
-var photos = [];    // [{ dataUrl, rotation }]
+var photos = [];   // [{ dataUrl, rotation, name, type }]
+
+/* ── Init ────────────────────────── */
+document.getElementById('shipDate').valueAsDate = new Date();
+updatePathPreview();
 
 
 /* ═══════════════════════════════════
-   PHOTOS（梱包写真）
+   保存先パス プレビュー
+═══════════════════════════════════ */
+function getMonthFolderName() {
+  var raw = document.getElementById('shipDate').value;
+  if (!raw) return '';
+  var d = new Date(raw + 'T00:00:00');
+  var m = d.getMonth() + 1;
+  return '' + d.getFullYear() + (m < 10 ? '0' + m : m);
+}
+
+function updatePathPreview() {
+  var month = getMonthFolderName();
+  var proj  = document.getElementById('projectName').value.trim();
+  document.getElementById('ppMonth').textContent   = month || '（出荷日を選択）';
+  document.getElementById('ppProject').textContent = proj  || '（案件名を入力）';
+}
+
+
+/* ═══════════════════════════════════
+   PHOTOS
 ═══════════════════════════════════ */
 function handlePhotos(input) {
   var files = Array.from(input.files);
   if (!files.length) return;
   var loaded = 0;
-  files.forEach(function(file) {
+  var slots = [];
+
+  files.forEach(function(file, i) {
+    slots.push(null);
     readFile(file, function(dataUrl) {
-      photos.push({ dataUrl: dataUrl, rotation: 0 });
+      slots[i] = { dataUrl: dataUrl, rotation: 0, name: file.name, type: file.type || 'image/jpeg' };
       loaded++;
-      if (loaded === files.length) renderGrid();
+      if (loaded === files.length) {
+        slots.forEach(function(s) { if (s) photos.push(s); });
+        renderGrid();
+      }
     });
   });
   input.value = '';
@@ -347,10 +459,7 @@ function renderGrid() {
   badge.textContent = photos.length + '枚';
   grid.innerHTML = '';
 
-  if (photos.length === 0) {
-    section.style.display = 'none';
-    return;
-  }
+  if (photos.length === 0) { section.style.display = 'none'; return; }
   section.style.display = 'block';
 
   photos.forEach(function(p, i) {
@@ -368,7 +477,6 @@ function renderGrid() {
     var rotBtn = document.createElement('button');
     rotBtn.className = 'pt-rot';
     rotBtn.textContent = '↻';
-    rotBtn.title = '90°回転';
     rotBtn.onclick = (function(idx) {
       return function(e) {
         e.stopPropagation();
@@ -403,28 +511,21 @@ function clearPhotos() {
 
 
 /* ═══════════════════════════════════
-   CANVAS 回転・リサイズ
+   画像処理ユーティリティ
 ═══════════════════════════════════ */
 function getRotatedDataUrl(dataUrl, rotation, callback) {
   var img = new Image();
   img.onload = function() {
-    var w = img.naturalWidth;
-    var h = img.naturalHeight;
+    var w = img.naturalWidth, h = img.naturalHeight;
     var maxSize = 1600;
     var scale = Math.min(1, maxSize / Math.max(w, h));
-    var rw = Math.round(w * scale);
-    var rh = Math.round(h * scale);
+    var rw = Math.round(w * scale), rh = Math.round(h * scale);
 
     var canvas = document.createElement('canvas');
-    var ctx    = canvas.getContext('2d');
+    var ctx = canvas.getContext('2d');
 
-    if (rotation === 90 || rotation === 270) {
-      canvas.width  = rh;
-      canvas.height = rw;
-    } else {
-      canvas.width  = rw;
-      canvas.height = rh;
-    }
+    if (rotation === 90 || rotation === 270) { canvas.width = rh; canvas.height = rw; }
+    else { canvas.width = rw; canvas.height = rh; }
 
     ctx.save();
     ctx.translate(canvas.width / 2, canvas.height / 2);
@@ -438,9 +539,7 @@ function getRotatedDataUrl(dataUrl, rotation, callback) {
 }
 
 function rotateAsync(dataUrl, rotation) {
-  return new Promise(function(resolve) {
-    getRotatedDataUrl(dataUrl, rotation, resolve);
-  });
+  return new Promise(function(resolve) { getRotatedDataUrl(dataUrl, rotation, resolve); });
 }
 
 function getImageDims(dataUrl) {
@@ -457,18 +556,16 @@ function renderTextToImage(text, opts) {
   var fontSizePx = opts.fontSizePx || 80;
   var fontWeight = opts.fontWeight || 'normal';
   var color = opts.color || '#000000';
-  var fontFamily = opts.fontFamily ||
-    "'Hiragino Sans','Hiragino Kaku Gothic ProN','Yu Gothic UI','Meiryo','Noto Sans JP',sans-serif";
+  var fontFamily = "'Hiragino Sans','Hiragino Kaku Gothic ProN','Yu Gothic UI','Meiryo','Noto Sans JP',sans-serif";
 
   var measure = document.createElement('canvas').getContext('2d');
   measure.font = fontWeight + ' ' + fontSizePx + 'px ' + fontFamily;
   var textWidth = Math.ceil(measure.measureText(text).width);
 
   var padX = Math.ceil(fontSizePx * 0.15);
-  var canvasH = Math.ceil(fontSizePx * 1.4);
   var canvas = document.createElement('canvas');
   canvas.width = textWidth + padX * 2;
-  canvas.height = canvasH;
+  canvas.height = Math.ceil(fontSizePx * 1.4);
 
   var ctx = canvas.getContext('2d');
   ctx.font = fontWeight + ' ' + fontSizePx + 'px ' + fontFamily;
@@ -482,167 +579,227 @@ function renderTextToImage(text, opts) {
 
 
 /* ═══════════════════════════════════
-   ワンクリックPDF直接生成（jsPDF）
+   メイン処理
 ═══════════════════════════════════ */
-async function generatePdfDirect() {
+async function runAll() {
+  var shipDateRaw = document.getElementById('shipDate').value;
+  var projectName = document.getElementById('projectName').value.trim();
+  var wantPdf      = document.getElementById('optPdf').checked;
+  var wantDriveImg = document.getElementById('optDriveImg').checked;
+  var wantDrivePdf = document.getElementById('optDrivePdf').checked;
+
   if (photos.length === 0) { alert('梱包写真を選択してください'); return; }
+  if (!shipDateRaw) { alert('出荷日を選択してください'); return; }
+  if (!projectName) { alert('案件名を入力してください'); return; }
 
-  var statusEl = document.getElementById('statusMain');
-  var btn = document.getElementById('mainBtn');
-
-  if (window.__jspdfFailed || typeof window.jspdf === 'undefined') {
-    statusEl.textContent = '⚠️ PDF機能の読み込みに失敗しました。インターネット接続をご確認のうえ、下の予備の方法をお試しください。';
-    return;
+  var needDrive = wantDriveImg || wantDrivePdf;
+  if (needDrive && !GAS_URL) {
+    if (!confirm('GAS Web AppのURLが未設定のため、ドライブ保存はスキップされます。\nPDFの作成のみ続行しますか？')) return;
+    wantDriveImg = false;
+    wantDrivePdf = false;
   }
+  if (!wantPdf && !wantDriveImg && !wantDrivePdf) { alert('実行する処理を1つ以上オンにしてください'); return; }
+
+  var btn = document.getElementById('mainBtn');
+  var statusEl = document.getElementById('statusMain');
+  var progWrap = document.getElementById('progressWrap');
+  var progFill = document.getElementById('progressFill');
 
   btn.disabled = true;
-  statusEl.textContent = '写真を処理中...';
+  progWrap.style.display = 'block';
 
-  var processedList = [];
-  for (var i = 0; i < photos.length; i++) {
-    var rotated = await rotateAsync(photos[i].dataUrl, photos[i].rotation);
-    processedList.push(rotated);
+  /* 総ステップ数を算出 */
+  var totalSteps = 1;                                  // PDF生成
+  if (wantDriveImg) totalSteps += photos.length;       // 画像アップロード
+  if (wantDrivePdf) totalSteps += 1;                   // PDFアップロード
+  var doneSteps = 0;
+
+  function step(msg) {
+    doneSteps++;
+    progFill.style.width = Math.round(doneSteps / totalSteps * 100) + '%';
+    statusEl.textContent = msg;
   }
 
-  statusEl.textContent = 'PDFを生成中...';
+  var monthFolder = getMonthFolderName();
+  var safeProject = projectName.replace(/[\\\/:*?"<>|]/g, '_');
+  var pdfFileName = '梱包写真_' + safeProject + '.pdf';
+  var folderUrl = '';
 
   try {
-    var jsPDF = window.jspdf.jsPDF;
-    var doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+    /* ── 1. PDF生成 ── */
+    statusEl.textContent = 'PDFを生成中...';
+    var pdfBase64 = null;
 
-    var perPage = 16;
-    var totalPages = Math.ceil(processedList.length / perPage);
-    var pageW = 210, pageH = 297;
-    var marginLR = 15, headerH = 15, gridTopGap = 3, bottomMargin = 9, gap = 2.5;
-    var gridW = pageW - marginLR * 2;
-    var gridTop = headerH + gridTopGap;
-    var gridH = pageH - bottomMargin - gridTop;
-    var cols = 4, rows = 4;
-    var cellW = (gridW - gap * (cols - 1)) / cols;
-    var cellH = (gridH - gap * (rows - 1)) / rows;
+    if (window.__jspdfFailed || typeof window.jspdf === 'undefined') {
+      throw new Error('PDF機能の読み込みに失敗しました。インターネット接続をご確認ください。');
+    }
 
-    for (var p = 0; p < totalPages; p++) {
-      if (p > 0) doc.addPage();
+    var doc = await buildPdfDoc();
+    if (wantPdf) doc.save(pdfFileName);
+    if (wantDrivePdf) {
+      pdfBase64 = doc.output('datauristring').split(',')[1];
+    }
+    step('PDF生成が完了しました');
 
-      /* ヘッダー帯（背景） */
-      doc.setFillColor(29, 29, 31);
-      doc.rect(0, 0, pageW, headerH, 'F');
+    /* ── 2. 元画像をドライブへ ── */
+    if (wantDriveImg) {
+      for (var i = 0; i < photos.length; i++) {
+        var p = photos[i];
+        var ext = (p.name && p.name.indexOf('.') > -1)
+                ? p.name.substring(p.name.lastIndexOf('.'))
+                : '.jpg';
+        var seq = (i + 1 < 10 ? '0' : '') + (i + 1);
+        var fname = safeProject + '_' + seq + ext;
 
-      /* 左：タイトル（日本語のため画像化） */
-      var titleImg = renderTextToImage('梱包写真', {
-        fontSizePx: 80, fontWeight: '700', color: '#ffffff'
-      });
-      var titleH = 6.5;
-      var titleW = titleH * (titleImg.w / titleImg.h);
-      doc.addImage(titleImg.dataUrl, 'PNG', marginLR, (headerH - titleH) / 2, titleW, titleH);
-
-      /* 右：会社名＋ページ番号（日本語のため画像化） */
-      var subImg = renderTextToImage(
-        '株式会社OKUTA / OK-DEPOT   ' + (p + 1) + ' / ' + totalPages,
-        { fontSizePx: 48, fontWeight: '400', color: '#ffffff' }
-      );
-      var subH = 3.4;
-      var subW = subH * (subImg.w / subImg.h);
-      doc.addImage(subImg.dataUrl, 'PNG', pageW - marginLR - subW, (headerH - subH) / 2, subW, subH);
-
-      var pagePhotos = processedList.slice(p * perPage, p * perPage + perPage);
-
-      for (var j = 0; j < perPage; j++) {
-        var col = j % cols, row = Math.floor(j / cols);
-        var x = marginLR + col * (cellW + gap);
-        var y = gridTop + row * (cellH + gap);
-
-        doc.setDrawColor(208, 208, 213);
-        doc.setLineWidth(0.3);
-        doc.rect(x, y, cellW, cellH);
-
-        if (pagePhotos[j]) {
-          var num = p * perPage + j + 1;
-          var dims = await getImageDims(pagePhotos[j]);
-          var captionH = 5, padding = 1.2;
-          var availW = cellW - padding * 2;
-          var availH = cellH - captionH - padding * 2;
-          var scale = Math.min(availW / dims.w, availH / dims.h);
-          var iw = dims.w * scale, ih = dims.h * scale;
-          var ix = x + (cellW - iw) / 2;
-          var iy = y + padding + (availH - ih) / 2;
-          doc.addImage(pagePhotos[j], 'JPEG', ix, iy, iw, ih);
-
-          doc.setFontSize(6);
-          doc.setTextColor(170, 170, 170);
-          doc.text('No.' + num, x + cellW / 2, y + cellH - 1.3, { align: 'center' });
-        }
+        statusEl.textContent = '元画像をアップロード中... (' + (i + 1) + ' / ' + photos.length + ')';
+        var res = await uploadToDrive({
+          month: monthFolder,
+          project: safeProject,
+          fileName: fname,
+          mimeType: p.type || 'image/jpeg',
+          base64: p.dataUrl.split(',')[1]
+        });
+        if (res && res.folderUrl) folderUrl = res.folderUrl;
+        step('元画像 ' + (i + 1) + ' / ' + photos.length + ' をアップロードしました');
       }
     }
 
-    doc.save('梱包写真.pdf');
-    statusEl.textContent = '✅ 梱包写真.pdf をダウンロードしました（' + processedList.length + '枚 / ' + totalPages + 'ページ）';
+    /* ── 3. PDFをドライブへ ── */
+    if (wantDrivePdf && pdfBase64) {
+      statusEl.textContent = 'PDFをアップロード中...';
+      var resPdf = await uploadToDrive({
+        month: monthFolder,
+        project: safeProject,
+        fileName: pdfFileName,
+        mimeType: 'application/pdf',
+        base64: pdfBase64
+      });
+      if (resPdf && resPdf.folderUrl) folderUrl = resPdf.folderUrl;
+      step('PDFをアップロードしました');
+    }
+
+    /* ── 完了 ── */
+    progFill.style.width = '100%';
+    var msg = '✅ 完了しました　' + monthFolder + ' › ' + safeProject;
+    statusEl.innerHTML = folderUrl
+      ? msg + '<br><a href="' + folderUrl + '" target="_blank">ドライブのフォルダを開く</a>'
+      : msg;
+
   } catch (err) {
-    statusEl.textContent = '⚠️ PDF生成中にエラーが発生しました。予備の方法をお試しください。';
     console.error(err);
+    statusEl.textContent = '⚠️ ' + (err.message || 'エラーが発生しました');
+    progFill.style.width = '0%';
   }
 
   btn.disabled = false;
-  setTimeout(function() { statusEl.textContent = ''; }, 8000);
 }
 
 
 /* ═══════════════════════════════════
-   予備の方法：印刷ダイアログ経由でPDF保存
+   PDF生成（jsPDF）
 ═══════════════════════════════════ */
-async function doPrintFallback() {
-  if (photos.length === 0) { alert('梱包写真を選択してください'); return; }
-  document.getElementById('statusMain').textContent = '画像を処理中...';
-
-  var processed = [];
+async function buildPdfDoc() {
+  var processedList = [];
   for (var i = 0; i < photos.length; i++) {
-    processed.push(await rotateAsync(photos[i].dataUrl, photos[i].rotation));
+    processedList.push(await rotateAsync(photos[i].dataUrl, photos[i].rotation));
   }
 
-  var html = '';
-  var photoIdx = 0;
-  var pageNum = 0;
+  var jsPDF = window.jspdf.jsPDF;
+  var doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+
   var perPage = 16;
-  var totalPages = Math.ceil(processed.length / perPage);
+  var totalPages = Math.ceil(processedList.length / perPage);
+  var pageW = 210, pageH = 297;
+  var marginLR = 15, headerH = 15, gridTopGap = 3, bottomMargin = 9, gap = 2.5;
+  var gridW = pageW - marginLR * 2;
+  var gridTop = headerH + gridTopGap;
+  var gridH = pageH - bottomMargin - gridTop;
+  var cols = 4, rows = 4;
+  var cellW = (gridW - gap * (cols - 1)) / cols;
+  var cellH = (gridH - gap * (rows - 1)) / rows;
 
-  while (photoIdx < processed.length) {
-    pageNum++;
-    var pagePhotos = processed.slice(photoIdx, photoIdx + perPage);
+  for (var p = 0; p < totalPages; p++) {
+    if (p > 0) doc.addPage();
 
-    html += '<div class="prt-photo-page">';
-    html += '<div class="prt-hdr">';
-    html += '<span class="prt-hdr-title">梱 包 写 真</span>';
-    html += '<span class="prt-hdr-sub">株式会社OKUTA / OK-DEPOT　　' + pageNum + ' / ' + totalPages + '</span>';
-    html += '</div>';
-    html += '<div class="prt-photo-grid">';
+    /* ヘッダー帯 */
+    doc.setFillColor(29, 29, 31);
+    doc.rect(0, 0, pageW, headerH, 'F');
+
+    var titleImg = renderTextToImage('梱包写真', { fontSizePx: 80, fontWeight: '700', color: '#ffffff' });
+    var titleH = 6.5;
+    var titleW = titleH * (titleImg.w / titleImg.h);
+    doc.addImage(titleImg.dataUrl, 'PNG', marginLR, (headerH - titleH) / 2, titleW, titleH);
+
+    var subImg = renderTextToImage(
+      '株式会社OKUTA / OK-DEPOT   ' + (p + 1) + ' / ' + totalPages,
+      { fontSizePx: 48, fontWeight: '400', color: '#ffffff' }
+    );
+    var subH = 3.4;
+    var subW = subH * (subImg.w / subImg.h);
+    doc.addImage(subImg.dataUrl, 'PNG', pageW - marginLR - subW, (headerH - subH) / 2, subW, subH);
+
+    var pagePhotos = processedList.slice(p * perPage, p * perPage + perPage);
 
     for (var j = 0; j < perPage; j++) {
-      var pNum = photoIdx + j + 1;
-      html += '<div class="prt-photo-cell">';
-      if (pagePhotos[j]) {
-        html += '<img src="' + pagePhotos[j] + '" alt="No.' + pNum + '">';
-        html += '<div class="prt-photo-num">No.' + pNum + '</div>';
-      }
-      html += '</div>';
-    }
+      var col = j % cols, row = Math.floor(j / cols);
+      var x = marginLR + col * (cellW + gap);
+      var y = gridTop + row * (cellH + gap);
 
-    html += '</div></div>';
-    photoIdx += perPage;
+      doc.setDrawColor(208, 208, 213);
+      doc.setLineWidth(0.3);
+      doc.rect(x, y, cellW, cellH);
+
+      if (pagePhotos[j]) {
+        var num = p * perPage + j + 1;
+        var dims = await getImageDims(pagePhotos[j]);
+        var captionH = 5, padding = 1.2;
+        var availW = cellW - padding * 2;
+        var availH = cellH - captionH - padding * 2;
+        var scale = Math.min(availW / dims.w, availH / dims.h);
+        var iw = dims.w * scale, ih = dims.h * scale;
+        var ix = x + (cellW - iw) / 2;
+        var iy = y + padding + (availH - ih) / 2;
+        doc.addImage(pagePhotos[j], 'JPEG', ix, iy, iw, ih);
+
+        doc.setFontSize(6);
+        doc.setTextColor(170, 170, 170);
+        doc.text('No.' + num, x + cellW / 2, y + cellH - 1.3, { align: 'center' });
+      }
+    }
   }
 
-  var printArea = document.getElementById('printArea');
-  printArea.innerHTML = html;
-  printArea.style.display = 'block';
+  return doc;
+}
 
-  setTimeout(function() {
-    window.print();
-    setTimeout(function() {
-      printArea.style.display = 'none';
-      printArea.innerHTML = '';
-      document.getElementById('statusMain').textContent = '✅ 完了しました（' + processed.length + '枚 / ' + totalPages + 'ページ）';
-      setTimeout(function() { document.getElementById('statusMain').textContent = ''; }, 5000);
-    }, 2000);
-  }, 350);
+
+/* ═══════════════════════════════════
+   GAS Web App へアップロード
+   Content-Type: text/plain で
+   CORSプリフライトを回避
+═══════════════════════════════════ */
+async function uploadToDrive(payload) {
+  var response = await fetch(GAS_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify(payload)
+  });
+
+  if (!response.ok) {
+    throw new Error('アップロードに失敗しました（HTTP ' + response.status + '）');
+  }
+
+  var text = await response.text();
+  var result;
+  try {
+    result = JSON.parse(text);
+  } catch (e) {
+    throw new Error('GASからの応答を解析できませんでした。デプロイ設定（アクセス権を「全員」に）をご確認ください。');
+  }
+
+  if (!result.ok) {
+    throw new Error(result.error || 'アップロードに失敗しました');
+  }
+  return result;
 }
 
 
