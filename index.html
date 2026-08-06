@@ -3,546 +3,377 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>梱包写真PDF作成ツール</title>
+<title>梱包写真ツール</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" onerror="window.__jspdfFailed = true;"></script>
 <style>
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --black: #1d1d1f;
-  --gray:  #6e6e73;
-  --light: #f5f5f7;
-  --border:#e5e5ea;
-  --white: #ffffff;
+  --ink:    #111113;
+  --mute:   #8e8e93;
+  --line:   #e8e8ec;
+  --paper:  #ffffff;
+  --wash:   #f7f7f9;
 }
+
+html { -webkit-text-size-adjust: 100%; }
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Yu Gothic UI', sans-serif;
-  background: var(--light);
-  color: var(--black);
-  max-width: 480px;
-  margin: 0 auto;
-  padding-bottom: 48px;
+  background: var(--paper);
+  color: var(--ink);
   -webkit-font-smoothing: antialiased;
+  line-height: 1.5;
 }
 
-.appbar {
-  background: var(--white);
-  border-bottom: 1px solid var(--border);
-  padding: 16px 20px 12px;
-  position: sticky;
-  top: 0;
-  z-index: 10;
+.shell {
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 0 22px 120px;
 }
-.appbar-title { font-size: 17px; font-weight: 700; }
-.appbar-sub   { font-size: 12px; color: var(--gray); margin-top: 2px; }
 
-.main { padding: 16px; }
+/* ── Title ── */
+h1 {
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  padding: 34px 0 26px;
+}
 
-.step-label {
+/* ── Section ── */
+.sec { padding: 22px 0; border-top: 1px solid var(--line); }
+.sec:first-of-type { border-top: none; padding-top: 0; }
+
+.eyebrow {
   font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.08em;
-  color: var(--gray);
-  margin-bottom: 8px;
-  padding-left: 2px;
-}
-
-.card {
-  background: var(--white);
-  border-radius: 16px;
-  padding: 18px;
+  color: var(--mute);
+  letter-spacing: 0.09em;
   margin-bottom: 14px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 0 0 0.5px rgba(0,0,0,0.05);
 }
 
-.card-head {
+/* ── Fields ── */
+.row {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 16px;
-  padding-bottom: 14px;
-  border-bottom: 1px solid var(--border);
+  gap: 14px;
+  padding: 11px 0;
 }
-.card-icon {
-  width: 38px; height: 38px;
-  background: var(--black);
-  border-radius: 10px;
-  display: flex; align-items: center; justify-content: center;
-  color: white;
-  font-size: 18px;
+.row + .row { border-top: 1px solid var(--line); }
+.row label {
+  font-size: 14px;
+  width: 68px;
   flex-shrink: 0;
+  color: var(--mute);
 }
-.card-title { font-size: 15px; font-weight: 700; }
-.card-sub   { font-size: 12px; color: var(--gray); margin-top: 1px; }
-
-/* ── Form ── */
-.field { margin-bottom: 14px; }
-.field:last-child { margin-bottom: 0; }
-.field label {
-  display: block;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--gray);
-  margin-bottom: 6px;
-}
-.field input[type="text"],
-.field input[type="date"] {
-  width: 100%;
-  padding: 12px 14px;
-  border: 1.5px solid var(--border);
-  border-radius: 10px;
+.row input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
   font-size: 16px;
   font-family: inherit;
-  color: var(--black);
-  background: var(--white);
-  outline: none;
+  color: var(--ink);
+  background: transparent;
+  padding: 2px 0;
   -webkit-appearance: none;
 }
-.field input:focus { border-color: var(--black); }
-.field-hint { font-size: 11px; color: var(--gray); margin-top: 5px; line-height: 1.6; }
+.row input::placeholder { color: #c7c7cc; }
 
-.path-preview {
-  background: var(--light);
-  border-radius: 10px;
-  padding: 11px 14px;
-  font-size: 12px;
-  line-height: 1.9;
-  margin-top: 12px;
+/* ── Path ── */
+.path {
+  font-size: 12.5px;
+  color: var(--mute);
+  margin-top: 16px;
+  line-height: 1.8;
   word-break: break-all;
 }
-.path-preview .pp-label {
-  font-size: 10px; color: var(--gray);
-  font-weight: 700; letter-spacing: 0.05em;
-  display: block; margin-bottom: 3px;
-}
-.path-preview .pp-seg { color: var(--gray); }
-.path-preview .pp-cur { color: var(--black); font-weight: 700; }
+.path b { color: var(--ink); font-weight: 600; }
 
-/* ── Toggle ── */
-.toggle-row {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 12px 0;
-  border-top: 1px solid var(--border);
-}
-.toggle-row:first-of-type { border-top: none; }
-.toggle-label { font-size: 13px; font-weight: 600; }
-.toggle-sub { font-size: 11px; color: var(--gray); margin-top: 1px; }
-.switch { position: relative; width: 46px; height: 27px; flex-shrink: 0; }
-.switch input { opacity: 0; width: 0; height: 0; }
-.slider {
-  position: absolute; cursor: pointer;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: #d1d1d6; border-radius: 27px;
-  transition: 0.25s;
-}
-.slider:before {
-  position: absolute; content: "";
-  height: 23px; width: 23px; left: 2px; bottom: 2px;
-  background: white; border-radius: 50%;
-  transition: 0.25s;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-}
-.switch input:checked + .slider { background: var(--black); }
-.switch input:checked + .slider:before { transform: translateX(19px); }
-
-/* ── Upload zone ── */
-.upload-zone {
-  border: 2px dashed var(--border);
-  border-radius: 10px;
-  padding: 20px 14px;
-  text-align: center;
+/* ── Photos ── */
+.add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: 52px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--wash);
+  font-size: 14px;
+  font-weight: 600;
+  font-family: inherit;
+  color: var(--ink);
   cursor: pointer;
-  background: var(--light);
   -webkit-tap-highlight-color: transparent;
-  user-select: none;
 }
-.upload-zone:active { background: #ebebee; border-color: var(--black); }
-.uz-icon { font-size: 28px; display: block; margin-bottom: 6px; }
-.uz-main { font-size: 14px; font-weight: 600; }
-.uz-hint { font-size: 12px; color: var(--gray); margin-top: 2px; }
+.add:active { background: #eeeef1; }
 
-/* ── Photo grid ── */
-.photo-count-row {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 10px;
-}
-.count-badge {
-  background: var(--black); color: white;
-  border-radius: 20px; padding: 2px 9px;
-  font-size: 11px; font-weight: 700;
-}
-.photo-grid-ui {
+.grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 6px;
+  gap: 7px;
+  margin-top: 14px;
 }
-.photo-thumb {
+.cell {
   position: relative;
   aspect-ratio: 1;
-  border-radius: 8px;
+  border-radius: 9px;
   overflow: hidden;
-  background: var(--light);
+  background: var(--wash);
 }
-.photo-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.pt-num {
-  position: absolute; bottom: 2px; left: 2px;
-  background: rgba(0,0,0,0.55); color: white;
-  font-size: 9px; font-weight: 700;
-  padding: 1px 4px; border-radius: 3px;
+.cell img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.cell .n {
+  position: absolute; left: 3px; bottom: 3px;
+  font-size: 9px; font-weight: 700; color: #fff;
+  background: rgba(0,0,0,.5);
+  padding: 1px 4px; border-radius: 4px;
 }
-.pt-rot {
-  position: absolute; bottom: 2px; right: 2px;
-  width: 20px; height: 20px;
-  background: rgba(0,0,0,0.55); color: white;
+.cell button {
+  position: absolute;
+  width: 19px; height: 19px;
   border: none; border-radius: 50%;
-  font-size: 12px; cursor: pointer;
+  background: rgba(0,0,0,.5); color: #fff;
+  font-size: 11px; line-height: 1;
   display: flex; align-items: center; justify-content: center;
-  padding: 0; -webkit-tap-highlight-color: transparent;
-}
-.pt-del {
-  position: absolute; top: 2px; right: 2px;
-  width: 18px; height: 18px;
-  background: rgba(0,0,0,0.55); color: white;
-  border: none; border-radius: 50%;
-  font-size: 12px; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  padding: 0; -webkit-tap-highlight-color: transparent;
-}
-.photo-hint { text-align: center; font-size: 11px; color: var(--gray); margin-top: 6px; }
-
-/* ── Buttons ── */
-.btn {
-  display: block; width: 100%;
-  padding: 15px 20px;
-  border-radius: 100px; border: none;
-  font-size: 15px; font-weight: 700; font-family: inherit;
-  cursor: pointer; text-align: center;
-  margin-top: 12px;
+  cursor: pointer; padding: 0;
   -webkit-tap-highlight-color: transparent;
-  transition: opacity 0.15s, transform 0.1s;
 }
-.btn:active { opacity: 0.65; transform: scale(0.98); }
-.btn:disabled { opacity: 0.4; cursor: default; transform: none; }
-.btn-black  { background: var(--black); color: white; font-size: 16px; padding: 17px; }
-.btn-outline {
-  background: transparent; color: var(--black);
-  border: 1.5px solid var(--black);
-  font-size: 13px;
-}
+.cell .rot { right: 3px; bottom: 3px; }
+.cell .del { right: 3px; top: 3px; }
 
-.info-box {
-  background: var(--light);
-  border-radius: 10px;
-  padding: 10px 14px;
-  font-size: 12px;
-  color: var(--gray);
-  line-height: 1.7;
-  margin-top: 12px;
-}
-.info-box strong { color: var(--black); }
+.tally { font-size: 12.5px; color: var(--mute); margin-top: 12px; }
 
-/* ── Progress ── */
-.progress-wrap { margin-top: 14px; display: none; }
-.progress-bar-bg {
-  height: 6px; background: var(--border);
-  border-radius: 6px; overflow: hidden;
+/* ── Toggle ── */
+.toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
 }
-.progress-bar-fill {
-  height: 100%; width: 0%;
-  background: var(--black);
-  border-radius: 6px;
-  transition: width 0.3s;
+.toggle span { font-size: 14.5px; font-weight: 500; }
+.sw { position: relative; width: 46px; height: 28px; flex-shrink: 0; }
+.sw input { opacity: 0; width: 0; height: 0; }
+.sw i {
+  position: absolute; inset: 0;
+  background: #dcdce1; border-radius: 28px;
+  cursor: pointer; transition: background .22s;
 }
-.status-msg {
-  text-align: center; font-size: 12px;
-  color: var(--gray); margin-top: 10px;
-  min-height: 16px; line-height: 1.7;
-  word-break: break-all;
+.sw i::after {
+  content: ''; position: absolute;
+  width: 24px; height: 24px; left: 2px; top: 2px;
+  background: #fff; border-radius: 50%;
+  transition: transform .22s;
+  box-shadow: 0 1px 3px rgba(0,0,0,.22);
 }
-.status-msg a { color: var(--black); font-weight: 600; }
+.sw input:checked + i { background: var(--ink); }
+.sw input:checked + i::after { transform: translateX(18px); }
+
+/* ── Footer bar ── */
+.bar {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  background: rgba(255,255,255,.94);
+  backdrop-filter: saturate(180%) blur(14px);
+  -webkit-backdrop-filter: saturate(180%) blur(14px);
+  border-top: 1px solid var(--line);
+  padding: 12px 22px calc(12px + env(safe-area-inset-bottom));
+}
+.bar-in { max-width: 420px; margin: 0 auto; }
+
+.go {
+  width: 100%;
+  height: 52px;
+  border: none; border-radius: 100px;
+  background: var(--ink); color: #fff;
+  font-size: 16px; font-weight: 700; font-family: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity .15s, transform .1s;
+}
+.go:active { transform: scale(.985); opacity: .8; }
+.go:disabled { opacity: .35; transform: none; }
+
+.track { height: 2px; background: var(--line); border-radius: 2px; margin-bottom: 12px; display: none; }
+.track i { display: block; height: 100%; width: 0; background: var(--ink); border-radius: 2px; transition: width .3s; }
+
+.note {
+  font-size: 12.5px; color: var(--mute);
+  text-align: center; margin-top: 10px;
+  min-height: 17px; line-height: 1.6; word-break: break-all;
+}
+.note a { color: var(--ink); font-weight: 600; }
 
 </style>
 </head>
 <body>
 
-<div class="appbar">
-  <div class="appbar-title">📦 梱包写真PDF作成ツール</div>
-  <div class="appbar-sub">PDF作成 ＋ 元画像をGoogleドライブへ自動保存</div>
+<div class="shell">
+
+  <h1>梱包写真ツール</h1>
+
+  <div class="sec">
+    <div class="row">
+      <label for="shipDate">出荷日</label>
+      <input type="date" id="shipDate" onchange="drawPath()">
+    </div>
+    <div class="row">
+      <label for="projectName">案件名</label>
+      <input type="text" id="projectName" placeholder="鬼塚工務店（〇〇様邸）第〇便"
+             autocomplete="off" oninput="drawPath()">
+    </div>
+    <div class="path">
+      G2_出荷写真 › <b id="pMonth">—</b> › <b id="pProj">—</b>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="eyebrow">写真</div>
+    <button class="add" onclick="document.getElementById('pick').click()">
+      写真を追加
+    </button>
+    <input type="file" id="pick" accept="image/*" multiple style="display:none" onchange="onPick(this)">
+    <div class="grid" id="grid"></div>
+    <div class="tally" id="tally"></div>
+  </div>
+
+  <div class="sec">
+    <div class="toggle">
+      <span>G2_出荷写真 に保存</span>
+      <label class="sw">
+        <input type="checkbox" id="optDrive" checked><i></i>
+      </label>
+    </div>
+  </div>
+
 </div>
 
-<div class="main">
-
-  <!-- ─── STEP 1: 案件情報 ─── -->
-  <div class="step-label">STEP 1　案件情報</div>
-  <div class="card">
-    <div class="card-head">
-      <div class="card-icon">📁</div>
-      <div>
-        <div class="card-title">保存先フォルダの設定</div>
-        <div class="card-sub">出荷日から YYYYMM を自動判定</div>
-      </div>
-    </div>
-
-    <div class="field">
-      <label>出荷日 *</label>
-      <input type="date" id="shipDate" onchange="updatePathPreview()">
-      <div class="field-hint">この日付の年月（例：2026年8月 → 202608）フォルダに格納されます</div>
-    </div>
-
-    <div class="field">
-      <label>案件名（フォルダ名）*</label>
-      <input type="text" id="projectName" placeholder="例：鬼塚工務店（〇〇様邸）第〇便"
-             autocomplete="off" oninput="updatePathPreview()">
-    </div>
-
-    <div class="path-preview">
-      <span class="pp-label">保存先パス</span>
-      <span class="pp-seg">G2_出荷写真</span> ›
-      <span class="pp-cur" id="ppMonth">202608</span> ›
-      <span class="pp-cur" id="ppProject">（案件名を入力）</span>
-    </div>
+<div class="bar">
+  <div class="bar-in">
+    <div class="track" id="track"><i id="fill"></i></div>
+    <button class="go" id="go" onclick="run()">PDFを作る</button>
+    <div class="note" id="note"></div>
   </div>
-
-  <!-- ─── STEP 2: 写真 ─── -->
-  <div class="step-label">STEP 2　梱包写真</div>
-  <div class="card">
-    <div class="card-head">
-      <div class="card-icon">📷</div>
-      <div>
-        <div class="card-title">梱包写真の選択</div>
-        <div class="card-sub">4×4グリッド（最大16枚/ページ）</div>
-      </div>
-    </div>
-
-    <div class="upload-zone" onclick="document.getElementById('photoInput').click()">
-      <span class="uz-icon">📷</span>
-      <div class="uz-main">タップして写真を追加</div>
-      <div class="uz-hint">複数選択OK・後から追加も可</div>
-    </div>
-    <input type="file" id="photoInput" accept="image/*" multiple
-           style="display:none" onchange="handlePhotos(this)">
-
-    <div id="photoSection" style="display:none; margin-top:14px;">
-      <div class="photo-count-row">
-        <div style="font-size:13px; font-weight:600;">選択済み写真</div>
-        <div class="count-badge" id="photoBadge">0枚</div>
-      </div>
-      <div class="photo-grid-ui" id="photoGrid"></div>
-      <div class="photo-hint">↻ で回転 ／ ✕ で削除</div>
-    </div>
-
-    <button class="btn btn-outline" onclick="clearPhotos()">写真をすべてクリア</button>
-  </div>
-
-  <!-- ─── STEP 3: 実行 ─── -->
-  <div class="step-label">STEP 3　実行</div>
-  <div class="card">
-
-    <div class="toggle-row">
-      <div>
-        <div class="toggle-label">PDFをダウンロード</div>
-        <div class="toggle-sub">端末に梱包写真PDFを保存</div>
-      </div>
-      <label class="switch">
-        <input type="checkbox" id="optPdf" checked>
-        <span class="slider"></span>
-      </label>
-    </div>
-
-    <div class="toggle-row">
-      <div>
-        <div class="toggle-label">元画像をドライブに保存</div>
-        <div class="toggle-sub">撮影したままの画像をアップロード</div>
-      </div>
-      <label class="switch">
-        <input type="checkbox" id="optDriveImg" checked>
-        <span class="slider"></span>
-      </label>
-    </div>
-
-    <div class="toggle-row">
-      <div>
-        <div class="toggle-label">PDFもドライブに保存</div>
-        <div class="toggle-sub">同じフォルダにPDFを格納</div>
-      </div>
-      <label class="switch">
-        <input type="checkbox" id="optDrivePdf" checked>
-        <span class="slider"></span>
-      </label>
-    </div>
-
-    <button class="btn btn-black" id="mainBtn" onclick="runAll()">
-      実行する
-    </button>
-
-    <div class="progress-wrap" id="progressWrap">
-      <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill"></div></div>
-    </div>
-    <div class="status-msg" id="statusMain"></div>
-
-    <div class="info-box">
-      ドライブ保存にはGAS Web Appの設定が必要です。<br>
-      未設定の場合はPDFダウンロードのみ動作します。
-    </div>
-  </div>
-
-</div><!-- /main -->
+</div>
 
 
 <script>
 'use strict';
 
-/* ═══════════════════════════════════
-   ★ 設定：GAS Web App の URL をここに貼り付け
-   （デプロイ後に取得できる /exec で終わるURL）
-═══════════════════════════════════ */
-var GAS_URL = 'https://script.google.com/macros/s/AKfycbyhcUU4dcN7WQErUFwkuldPOfU0ARWfTHki-mR597bjNEs62XsL4h7JTHo_6kS6YlWO/exec';
+/* ═══════════════════════════════
+   GAS Web App の URL を貼り付け
+═══════════════════════════════ */
+var GAS_URL = '';
 
 
-/* ── State ───────────────────────── */
-var photos = [];   // [{ dataUrl, rotation, name, type }]
+var photos = [];
 
-/* ── Init ────────────────────────── */
 document.getElementById('shipDate').valueAsDate = new Date();
-updatePathPreview();
+drawPath();
 
 
-/* ═══════════════════════════════════
-   保存先パス プレビュー
-═══════════════════════════════════ */
-function getMonthFolderName() {
-  var raw = document.getElementById('shipDate').value;
-  if (!raw) return '';
-  var d = new Date(raw + 'T00:00:00');
+/* ── 保存先パス ── */
+function monthName() {
+  var v = document.getElementById('shipDate').value;
+  if (!v) return '';
+  var d = new Date(v + 'T00:00:00');
   var m = d.getMonth() + 1;
   return '' + d.getFullYear() + (m < 10 ? '0' + m : m);
 }
 
-function updatePathPreview() {
-  var month = getMonthFolderName();
-  var proj  = document.getElementById('projectName').value.trim();
-  document.getElementById('ppMonth').textContent   = month || '（出荷日を選択）';
-  document.getElementById('ppProject').textContent = proj  || '（案件名を入力）';
+function drawPath() {
+  document.getElementById('pMonth').textContent = monthName() || '—';
+  document.getElementById('pProj').textContent =
+    document.getElementById('projectName').value.trim() || '—';
 }
 
 
-/* ═══════════════════════════════════
-   PHOTOS
-═══════════════════════════════════ */
-function handlePhotos(input) {
+/* ── 写真 ── */
+function onPick(input) {
   var files = Array.from(input.files);
   if (!files.length) return;
-  var loaded = 0;
-  var slots = [];
+  var slots = new Array(files.length);
+  var done = 0;
 
   files.forEach(function(file, i) {
-    slots.push(null);
-    readFile(file, function(dataUrl) {
-      slots[i] = { dataUrl: dataUrl, rotation: 0, name: file.name, type: file.type || 'image/jpeg' };
-      loaded++;
-      if (loaded === files.length) {
+    var r = new FileReader();
+    r.onload = function(e) {
+      slots[i] = { dataUrl: e.target.result, rotation: 0, name: file.name, type: file.type || 'image/jpeg' };
+      if (++done === files.length) {
         slots.forEach(function(s) { if (s) photos.push(s); });
-        renderGrid();
+        drawGrid();
       }
-    });
+    };
+    r.readAsDataURL(file);
   });
   input.value = '';
 }
 
-function renderGrid() {
-  var grid    = document.getElementById('photoGrid');
-  var section = document.getElementById('photoSection');
-  var badge   = document.getElementById('photoBadge');
-
-  badge.textContent = photos.length + '枚';
+function drawGrid() {
+  var grid = document.getElementById('grid');
   grid.innerHTML = '';
-
-  if (photos.length === 0) { section.style.display = 'none'; return; }
-  section.style.display = 'block';
+  document.getElementById('tally').textContent =
+    photos.length ? photos.length + '枚　↻ 回転 ・ ✕ 削除' : '';
 
   photos.forEach(function(p, i) {
-    var thumb = document.createElement('div');
-    thumb.className = 'photo-thumb';
+    var cell = document.createElement('div');
+    cell.className = 'cell';
 
     var img = document.createElement('img');
     img.src = p.dataUrl;
     img.style.transform = 'rotate(' + p.rotation + 'deg)';
 
-    var num = document.createElement('div');
-    num.className = 'pt-num';
-    num.textContent = i + 1;
+    var n = document.createElement('div');
+    n.className = 'n';
+    n.textContent = i + 1;
 
-    var rotBtn = document.createElement('button');
-    rotBtn.className = 'pt-rot';
-    rotBtn.textContent = '↻';
-    rotBtn.onclick = (function(idx) {
-      return function(e) {
-        e.stopPropagation();
-        photos[idx].rotation = (photos[idx].rotation + 90) % 360;
-        renderGrid();
-      };
-    })(i);
+    var rot = document.createElement('button');
+    rot.className = 'rot';
+    rot.textContent = '↻';
+    rot.onclick = (function(k) { return function() {
+      photos[k].rotation = (photos[k].rotation + 90) % 360; drawGrid();
+    }; })(i);
 
-    var delBtn = document.createElement('button');
-    delBtn.className = 'pt-del';
-    delBtn.textContent = '✕';
-    delBtn.onclick = (function(idx) {
-      return function(e) {
-        e.stopPropagation();
-        photos.splice(idx, 1);
-        renderGrid();
-      };
-    })(i);
+    var del = document.createElement('button');
+    del.className = 'del';
+    del.textContent = '✕';
+    del.onclick = (function(k) { return function() {
+      photos.splice(k, 1); drawGrid();
+    }; })(i);
 
-    thumb.appendChild(img);
-    thumb.appendChild(num);
-    thumb.appendChild(rotBtn);
-    thumb.appendChild(delBtn);
-    grid.appendChild(thumb);
+    cell.appendChild(img); cell.appendChild(n);
+    cell.appendChild(rot); cell.appendChild(del);
+    grid.appendChild(cell);
   });
 }
 
-function clearPhotos() {
-  photos = [];
-  renderGrid();
-}
 
-
-/* ═══════════════════════════════════
-   画像処理ユーティリティ
-═══════════════════════════════════ */
-function getRotatedDataUrl(dataUrl, rotation, callback) {
-  var img = new Image();
-  img.onload = function() {
-    var w = img.naturalWidth, h = img.naturalHeight;
-    var maxSize = 1600;
-    var scale = Math.min(1, maxSize / Math.max(w, h));
-    var rw = Math.round(w * scale), rh = Math.round(h * scale);
-
-    var canvas = document.createElement('canvas');
-    var ctx = canvas.getContext('2d');
-
-    if (rotation === 90 || rotation === 270) { canvas.width = rh; canvas.height = rw; }
-    else { canvas.width = rw; canvas.height = rh; }
-
-    ctx.save();
-    ctx.translate(canvas.width / 2, canvas.height / 2);
-    ctx.rotate(rotation * Math.PI / 180);
-    ctx.drawImage(img, -rw / 2, -rh / 2, rw, rh);
-    ctx.restore();
-
-    callback(canvas.toDataURL('image/jpeg', 0.85));
-  };
-  img.src = dataUrl;
-}
-
+/* ── 画像処理 ── */
 function rotateAsync(dataUrl, rotation) {
-  return new Promise(function(resolve) { getRotatedDataUrl(dataUrl, rotation, resolve); });
+  return new Promise(function(resolve) {
+    var img = new Image();
+    img.onload = function() {
+      var w = img.naturalWidth, h = img.naturalHeight;
+      var s = Math.min(1, 1600 / Math.max(w, h));
+      var rw = Math.round(w * s), rh = Math.round(h * s);
+      var c = document.createElement('canvas');
+      var x = c.getContext('2d');
+      if (rotation === 90 || rotation === 270) { c.width = rh; c.height = rw; }
+      else { c.width = rw; c.height = rh; }
+      x.save();
+      x.translate(c.width / 2, c.height / 2);
+      x.rotate(rotation * Math.PI / 180);
+      x.drawImage(img, -rw / 2, -rh / 2, rw, rh);
+      x.restore();
+      resolve(c.toDataURL('image/jpeg', 0.85));
+    };
+    img.src = dataUrl;
+  });
 }
 
-function getImageDims(dataUrl) {
+function dims(dataUrl) {
   return new Promise(function(resolve) {
     var img = new Image();
     img.onload = function() { resolve({ w: img.naturalWidth, h: img.naturalHeight }); };
@@ -550,266 +381,180 @@ function getImageDims(dataUrl) {
   });
 }
 
-/* 日本語テキストをcanvasで画像化（jsPDF標準フォントは日本語非対応のため） */
-function renderTextToImage(text, opts) {
-  opts = opts || {};
-  var fontSizePx = opts.fontSizePx || 80;
-  var fontWeight = opts.fontWeight || 'normal';
-  var color = opts.color || '#000000';
-  var fontFamily = "'Hiragino Sans','Hiragino Kaku Gothic ProN','Yu Gothic UI','Meiryo','Noto Sans JP',sans-serif";
-
-  var measure = document.createElement('canvas').getContext('2d');
-  measure.font = fontWeight + ' ' + fontSizePx + 'px ' + fontFamily;
-  var textWidth = Math.ceil(measure.measureText(text).width);
-
-  var padX = Math.ceil(fontSizePx * 0.15);
-  var canvas = document.createElement('canvas');
-  canvas.width = textWidth + padX * 2;
-  canvas.height = Math.ceil(fontSizePx * 1.4);
-
-  var ctx = canvas.getContext('2d');
-  ctx.font = fontWeight + ' ' + fontSizePx + 'px ' + fontFamily;
-  ctx.fillStyle = color;
-  ctx.textBaseline = 'middle';
-  ctx.textAlign = 'left';
-  ctx.fillText(text, padX, canvas.height / 2);
-
-  return { dataUrl: canvas.toDataURL('image/png'), w: canvas.width, h: canvas.height };
+/* 日本語はcanvasで画像化（jsPDF標準フォントが日本語非対応のため） */
+function textImg(text, size, weight, color) {
+  var ff = "'Hiragino Sans','Hiragino Kaku Gothic ProN','Yu Gothic UI','Meiryo','Noto Sans JP',sans-serif";
+  var m = document.createElement('canvas').getContext('2d');
+  m.font = weight + ' ' + size + 'px ' + ff;
+  var tw = Math.ceil(m.measureText(text).width);
+  var pad = Math.ceil(size * 0.15);
+  var c = document.createElement('canvas');
+  c.width = tw + pad * 2;
+  c.height = Math.ceil(size * 1.4);
+  var x = c.getContext('2d');
+  x.font = weight + ' ' + size + 'px ' + ff;
+  x.fillStyle = color;
+  x.textBaseline = 'middle';
+  x.fillText(text, pad, c.height / 2);
+  return { dataUrl: c.toDataURL('image/png'), w: c.width, h: c.height };
 }
 
 
-/* ═══════════════════════════════════
-   メイン処理
-═══════════════════════════════════ */
-async function runAll() {
-  var shipDateRaw = document.getElementById('shipDate').value;
-  var projectName = document.getElementById('projectName').value.trim();
-  var wantPdf      = document.getElementById('optPdf').checked;
-  var wantDriveImg = document.getElementById('optDriveImg').checked;
-  var wantDrivePdf = document.getElementById('optDrivePdf').checked;
+/* ── 実行 ── */
+async function run() {
+  var date = document.getElementById('shipDate').value;
+  var proj = document.getElementById('projectName').value.trim();
+  var toDrive = document.getElementById('optDrive').checked;
 
-  if (photos.length === 0) { alert('梱包写真を選択してください'); return; }
-  if (!shipDateRaw) { alert('出荷日を選択してください'); return; }
-  if (!projectName) { alert('案件名を入力してください'); return; }
+  if (!photos.length) { alert('写真を追加してください'); return; }
+  if (!date) { alert('出荷日を選んでください'); return; }
+  if (!proj) { alert('案件名を入力してください'); return; }
 
-  var needDrive = wantDriveImg || wantDrivePdf;
-  if (needDrive && !GAS_URL) {
-    if (!confirm('GAS Web AppのURLが未設定のため、ドライブ保存はスキップされます。\nPDFの作成のみ続行しますか？')) return;
-    wantDriveImg = false;
-    wantDrivePdf = false;
-  }
-  if (!wantPdf && !wantDriveImg && !wantDrivePdf) { alert('実行する処理を1つ以上オンにしてください'); return; }
-
-  var btn = document.getElementById('mainBtn');
-  var statusEl = document.getElementById('statusMain');
-  var progWrap = document.getElementById('progressWrap');
-  var progFill = document.getElementById('progressFill');
-
-  btn.disabled = true;
-  progWrap.style.display = 'block';
-
-  /* 総ステップ数を算出 */
-  var totalSteps = 1;                                  // PDF生成
-  if (wantDriveImg) totalSteps += photos.length;       // 画像アップロード
-  if (wantDrivePdf) totalSteps += 1;                   // PDFアップロード
-  var doneSteps = 0;
-
-  function step(msg) {
-    doneSteps++;
-    progFill.style.width = Math.round(doneSteps / totalSteps * 100) + '%';
-    statusEl.textContent = msg;
+  if (toDrive && !GAS_URL) {
+    if (!confirm('保存先が未設定です。PDFの作成だけ進めますか？')) return;
+    toDrive = false;
   }
 
-  var monthFolder = getMonthFolderName();
-  var safeProject = projectName.replace(/[\\\/:*?"<>|]/g, '_');
-  var pdfFileName = '梱包写真_' + safeProject + '.pdf';
+  var go = document.getElementById('go');
+  var note = document.getElementById('note');
+  var track = document.getElementById('track');
+  var fill = document.getElementById('fill');
+
+  go.disabled = true;
+  track.style.display = 'block';
+
+  var steps = 1 + (toDrive ? photos.length + 1 : 0);
+  var done = 0;
+  function tick(msg) {
+    done++;
+    fill.style.width = Math.round(done / steps * 100) + '%';
+    note.textContent = msg;
+  }
+
+  var month = monthName();
+  var safe = proj.replace(/[\\\/:*?"<>|]/g, '_');
+  var pdfName = '梱包写真_' + safe + '.pdf';
   var folderUrl = '';
 
   try {
-    /* ── 1. PDF生成 ── */
-    statusEl.textContent = 'PDFを生成中...';
-    var pdfBase64 = null;
-
     if (window.__jspdfFailed || typeof window.jspdf === 'undefined') {
-      throw new Error('PDF機能の読み込みに失敗しました。インターネット接続をご確認ください。');
+      throw new Error('PDF機能を読み込めません。通信環境を確認してください');
     }
 
-    var doc = await buildPdfDoc();
-    if (wantPdf) doc.save(pdfFileName);
-    if (wantDrivePdf) {
-      pdfBase64 = doc.output('datauristring').split(',')[1];
-    }
-    step('PDF生成が完了しました');
+    note.textContent = 'PDFを作成中';
+    var doc = await makePdf();
+    doc.save(pdfName);
+    tick('PDFを保存しました');
 
-    /* ── 2. 元画像をドライブへ ── */
-    if (wantDriveImg) {
+    if (toDrive) {
       for (var i = 0; i < photos.length; i++) {
         var p = photos[i];
-        var ext = (p.name && p.name.indexOf('.') > -1)
-                ? p.name.substring(p.name.lastIndexOf('.'))
-                : '.jpg';
-        var seq = (i + 1 < 10 ? '0' : '') + (i + 1);
-        var fname = safeProject + '_' + seq + ext;
-
-        statusEl.textContent = '元画像をアップロード中... (' + (i + 1) + ' / ' + photos.length + ')';
-        var res = await uploadToDrive({
-          month: monthFolder,
-          project: safeProject,
-          fileName: fname,
-          mimeType: p.type || 'image/jpeg',
-          base64: p.dataUrl.split(',')[1]
+        var ext = p.name && p.name.indexOf('.') > -1 ? p.name.slice(p.name.lastIndexOf('.')) : '.jpg';
+        var seq = (i < 9 ? '0' : '') + (i + 1);
+        note.textContent = '写真をアップロード中 ' + (i + 1) + ' / ' + photos.length;
+        var r = await upload({
+          month: month, project: safe,
+          fileName: safe + '_' + seq + ext,
+          mimeType: p.type, base64: p.dataUrl.split(',')[1]
         });
-        if (res && res.folderUrl) folderUrl = res.folderUrl;
-        step('元画像 ' + (i + 1) + ' / ' + photos.length + ' をアップロードしました');
+        if (r.folderUrl) folderUrl = r.folderUrl;
+        tick('写真 ' + (i + 1) + ' / ' + photos.length);
       }
-    }
 
-    /* ── 3. PDFをドライブへ ── */
-    if (wantDrivePdf && pdfBase64) {
-      statusEl.textContent = 'PDFをアップロード中...';
-      var resPdf = await uploadToDrive({
-        month: monthFolder,
-        project: safeProject,
-        fileName: pdfFileName,
-        mimeType: 'application/pdf',
-        base64: pdfBase64
+      note.textContent = 'PDFをアップロード中';
+      var rp = await upload({
+        month: month, project: safe,
+        fileName: pdfName, mimeType: 'application/pdf',
+        base64: doc.output('datauristring').split(',')[1]
       });
-      if (resPdf && resPdf.folderUrl) folderUrl = resPdf.folderUrl;
-      step('PDFをアップロードしました');
+      if (rp.folderUrl) folderUrl = rp.folderUrl;
+      tick('');
     }
 
-    /* ── 完了 ── */
-    progFill.style.width = '100%';
-    var msg = '✅ 完了しました　' + monthFolder + ' › ' + safeProject;
-    statusEl.innerHTML = folderUrl
-      ? msg + '<br><a href="' + folderUrl + '" target="_blank">ドライブのフォルダを開く</a>'
-      : msg;
+    fill.style.width = '100%';
+    note.innerHTML = folderUrl
+      ? '完了　<a href="' + folderUrl + '" target="_blank">フォルダを開く</a>'
+      : '完了';
 
-  } catch (err) {
-    console.error(err);
-    statusEl.textContent = '⚠️ ' + (err.message || 'エラーが発生しました');
-    progFill.style.width = '0%';
+  } catch (e) {
+    console.error(e);
+    note.textContent = e.message || '失敗しました';
+    fill.style.width = '0';
   }
 
-  btn.disabled = false;
+  go.disabled = false;
 }
 
 
-/* ═══════════════════════════════════
-   PDF生成（jsPDF）
-═══════════════════════════════════ */
-async function buildPdfDoc() {
-  var processedList = [];
+/* ── PDF生成 ── */
+async function makePdf() {
+  var list = [];
   for (var i = 0; i < photos.length; i++) {
-    processedList.push(await rotateAsync(photos[i].dataUrl, photos[i].rotation));
+    list.push(await rotateAsync(photos[i].dataUrl, photos[i].rotation));
   }
 
-  var jsPDF = window.jspdf.jsPDF;
-  var doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+  var doc = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
 
-  var perPage = 16;
-  var totalPages = Math.ceil(processedList.length / perPage);
-  var pageW = 210, pageH = 297;
-  var marginLR = 15, headerH = 15, gridTopGap = 3, bottomMargin = 9, gap = 2.5;
-  var gridW = pageW - marginLR * 2;
-  var gridTop = headerH + gridTopGap;
-  var gridH = pageH - bottomMargin - gridTop;
-  var cols = 4, rows = 4;
-  var cellW = (gridW - gap * (cols - 1)) / cols;
-  var cellH = (gridH - gap * (rows - 1)) / rows;
+  var per = 16, pages = Math.ceil(list.length / per);
+  var pw = 210, ph = 297, ml = 15, hh = 15, gapTop = 3, mb = 9, g = 2.5;
+  var gw = pw - ml * 2, gt = hh + gapTop, gh = ph - mb - gt;
+  var cw = (gw - g * 3) / 4, ch = (gh - g * 3) / 4;
 
-  for (var p = 0; p < totalPages; p++) {
+  for (var p = 0; p < pages; p++) {
     if (p > 0) doc.addPage();
 
-    /* ヘッダー帯 */
-    doc.setFillColor(29, 29, 31);
-    doc.rect(0, 0, pageW, headerH, 'F');
+    doc.setFillColor(17, 17, 19);
+    doc.rect(0, 0, pw, hh, 'F');
 
-    var titleImg = renderTextToImage('梱包写真', { fontSizePx: 80, fontWeight: '700', color: '#ffffff' });
-    var titleH = 6.5;
-    var titleW = titleH * (titleImg.w / titleImg.h);
-    doc.addImage(titleImg.dataUrl, 'PNG', marginLR, (headerH - titleH) / 2, titleW, titleH);
+    var t = textImg('梱包写真', 80, '700', '#ffffff');
+    var th = 6.5, tw = th * (t.w / t.h);
+    doc.addImage(t.dataUrl, 'PNG', ml, (hh - th) / 2, tw, th);
 
-    var subImg = renderTextToImage(
-      '株式会社OKUTA / OK-DEPOT   ' + (p + 1) + ' / ' + totalPages,
-      { fontSizePx: 48, fontWeight: '400', color: '#ffffff' }
-    );
-    var subH = 3.4;
-    var subW = subH * (subImg.w / subImg.h);
-    doc.addImage(subImg.dataUrl, 'PNG', pageW - marginLR - subW, (headerH - subH) / 2, subW, subH);
+    var s = textImg('株式会社OKUTA / OK-DEPOT   ' + (p + 1) + ' / ' + pages, 48, '400', '#ffffff');
+    var sh = 3.4, sw = sh * (s.w / s.h);
+    doc.addImage(s.dataUrl, 'PNG', pw - ml - sw, (hh - sh) / 2, sw, sh);
 
-    var pagePhotos = processedList.slice(p * perPage, p * perPage + perPage);
+    var page = list.slice(p * per, p * per + per);
 
-    for (var j = 0; j < perPage; j++) {
-      var col = j % cols, row = Math.floor(j / cols);
-      var x = marginLR + col * (cellW + gap);
-      var y = gridTop + row * (cellH + gap);
+    for (var j = 0; j < per; j++) {
+      var x = ml + (j % 4) * (cw + g);
+      var y = gt + Math.floor(j / 4) * (ch + g);
 
-      doc.setDrawColor(208, 208, 213);
+      doc.setDrawColor(214, 214, 219);
       doc.setLineWidth(0.3);
-      doc.rect(x, y, cellW, cellH);
+      doc.rect(x, y, cw, ch);
 
-      if (pagePhotos[j]) {
-        var num = p * perPage + j + 1;
-        var dims = await getImageDims(pagePhotos[j]);
-        var captionH = 5, padding = 1.2;
-        var availW = cellW - padding * 2;
-        var availH = cellH - captionH - padding * 2;
-        var scale = Math.min(availW / dims.w, availH / dims.h);
-        var iw = dims.w * scale, ih = dims.h * scale;
-        var ix = x + (cellW - iw) / 2;
-        var iy = y + padding + (availH - ih) / 2;
-        doc.addImage(pagePhotos[j], 'JPEG', ix, iy, iw, ih);
+      if (page[j]) {
+        var d = await dims(page[j]);
+        var pad = 1.2, capH = 5;
+        var aw = cw - pad * 2, ah = ch - capH - pad * 2;
+        var sc = Math.min(aw / d.w, ah / d.h);
+        var iw = d.w * sc, ih = d.h * sc;
+        doc.addImage(page[j], 'JPEG', x + (cw - iw) / 2, y + pad + (ah - ih) / 2, iw, ih);
 
         doc.setFontSize(6);
         doc.setTextColor(170, 170, 170);
-        doc.text('No.' + num, x + cellW / 2, y + cellH - 1.3, { align: 'center' });
+        doc.text('No.' + (p * per + j + 1), x + cw / 2, y + ch - 1.3, { align: 'center' });
       }
     }
   }
-
   return doc;
 }
 
 
-/* ═══════════════════════════════════
-   GAS Web App へアップロード
-   Content-Type: text/plain で
-   CORSプリフライトを回避
-═══════════════════════════════════ */
-async function uploadToDrive(payload) {
-  var response = await fetch(GAS_URL, {
+/* ── アップロード ── */
+async function upload(payload) {
+  var res = await fetch(GAS_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
     body: JSON.stringify(payload)
   });
-
-  if (!response.ok) {
-    throw new Error('アップロードに失敗しました（HTTP ' + response.status + '）');
-  }
-
-  var text = await response.text();
-  var result;
-  try {
-    result = JSON.parse(text);
-  } catch (e) {
-    throw new Error('GASからの応答を解析できませんでした。デプロイ設定（アクセス権を「全員」に）をご確認ください。');
-  }
-
-  if (!result.ok) {
-    throw new Error(result.error || 'アップロードに失敗しました');
-  }
-  return result;
-}
-
-
-/* ═══════════════════════════════════
-   ユーティリティ
-═══════════════════════════════════ */
-function readFile(file, callback) {
-  var reader = new FileReader();
-  reader.onload = function(e) { callback(e.target.result); };
-  reader.readAsDataURL(file);
+  if (!res.ok) throw new Error('アップロードに失敗しました');
+  var out;
+  try { out = JSON.parse(await res.text()); }
+  catch (e) { throw new Error('保存先に接続できません'); }
+  if (!out.ok) throw new Error(out.error || 'アップロードに失敗しました');
+  return out;
 }
 </script>
 
